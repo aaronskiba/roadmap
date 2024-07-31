@@ -95,7 +95,13 @@ class UsersController < ApplicationController
 
     if @user.save
       if privileges_changed
-        revoked_granted_or_updated = !@user.perms.any? ? _('revoked') : !had_any_perms ? _('granted') : _('updated')
+        revoked_granted_or_updated = if @user.perms.none?
+                                       _('revoked')
+                                     elsif had_any_perms
+                                       _('updated')
+                                     else
+                                       _('granted')
+                                     end
         deliver_if(recipients: @user, key: 'users.admin_privileges') do |r|
           UserMailer.admin_privileges(r, revoked_granted_or_updated).deliver_now
         end
