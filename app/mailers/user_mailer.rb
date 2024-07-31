@@ -192,6 +192,7 @@ class UserMailer < ActionMailer::Base
     @username  = @user.name
     @ul_list   = privileges_list(@user)
     @helpdesk_email = helpdesk_email(org: @user.org)
+    @revoked_granted_or_updated = revoked_granted_or_updated
 
     I18n.with_locale I18n.locale do
       mail(to: user.email,

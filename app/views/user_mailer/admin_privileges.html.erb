@@ -3,7 +3,11 @@
 </p>
 <% if @user.perms.size > 0 %>
   <p>
-    <%= _('You have been granted administrator privileges in %{tool_name}:') %{ tool_name: tool_name } %>
+    <% if @revoked_granted_or_updated == _('granted') %>
+      <%= _('You have been granted administrator privileges in %{tool_name}:') %{ tool_name: tool_name } %>
+    <% else %>
+      <%= _('Your administrator privileges in %{tool_name} have been updated to the following:') %{ tool_name: tool_name } %>
+    <% end %>
   </p>
   <p>
     <%= sanitize(@ul_list) %>
