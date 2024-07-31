@@ -76,6 +76,7 @@ class UsersController < ApplicationController
     perms_ids = permission_params[:perm_ids].blank? ? [] : permission_params[:perm_ids].map(&:to_i)
     perms = Perm.where(id: perms_ids)
     privileges_changed = false
+    had_any_perms = @user.perms.any?
     current_user.perms.each do |perm|
       if @user.perms.include? perm
         unless perms.include? perm
@@ -94,8 +95,9 @@ class UsersController < ApplicationController
 
     if @user.save
       if privileges_changed
+        revoked_granted_or_updated = !@user.perms.any? ? _('revoked') : !had_any_perms ? _('granted') : _('updated')
         deliver_if(recipients: @user, key: 'users.admin_privileges') do |r|
-          UserMailer.admin_privileges(r).deliver_now
+          UserMailer.admin_privileges(r, revoked_granted_or_updated).deliver_now
         end
       end
       render(json: {
