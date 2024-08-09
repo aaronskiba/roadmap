@@ -2,4 +2,4 @@
 
 json.partial! 'api/v1/standard_response'
 
-json.items []
+json.items [title: 'Tableau Test']
