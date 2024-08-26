@@ -5,7 +5,7 @@ class OrgsController < ApplicationController
   include OrgSelectable
 
   after_action :verify_authorized, except: %w[
-    shibboleth_ds shibboleth_ds_passthru search
+    shibboleth_ds shibboleth_ds_passthru search #cilogon_ds cilogon_ds_passthru
   ]
   respond_to :html
 
@@ -151,6 +151,7 @@ class OrgsController < ApplicationController
 
     end
   end
+
   # rubocop:enable Metrics/AbcSize
 
   # POST /orgs  (via AJAX from Org Typeaheads ... see below for specific pages)
@@ -235,6 +236,10 @@ class OrgsController < ApplicationController
   def shib_params
     params.permit('org_id')
   end
+
+  # def cilo_params
+  #   params.permit('org_id')
+  # end
 
   def search_params
     params.require(:org).permit(:name, :type)

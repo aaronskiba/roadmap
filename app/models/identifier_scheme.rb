@@ -21,7 +21,7 @@ class IdentifierScheme < ApplicationRecord
 
   ##
   # The maximum length for a name
-  NAME_MAXIMUM_LENGTH = 30
+  NAME_MAXIMUM_LENGTH = 50
 
   has_many :identifiers
 
@@ -62,10 +62,16 @@ class IdentifierScheme < ApplicationRecord
   #    { "ror": "12345" }
   # so we cannot allow spaces or non alpha characters!
   def name=(value)
-    super(value&.downcase&.gsub(/[^a-z]/, ''))
+    super(value&.downcase&.gsub(/[^a-z|_]/, ''))
   end
 
   # ===========================
   # = Instance Methods =
   # ===========================
+
+  # def self.for_authentication
+  #   [
+  #     OpenStruct.new(name: 'openid_connect')
+  #   ]
+  # end
 end
