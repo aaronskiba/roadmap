@@ -375,7 +375,7 @@ Devise.setup do |config|
       host: "cilogon.org",
       identifier: Rails.application.secrets.cilogon_client_id,
       secret: Rails.application.secrets.cilogon_secret_key,
-      redirect_uri: "http://127.0.0.1:3000/users/auth/openid_connect/callback"
+      redirect_uri: "https://uat.library.ualberta.ca:3001/users/auth/openid_connect/callback"
     },
   }
 
