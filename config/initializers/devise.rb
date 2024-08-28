@@ -364,7 +364,7 @@ Devise.setup do |config|
 
   config.omniauth :openid_connect, {
     name: :openid_connect,
-    scope: [:openid], #:email], #:profile],#, :"org.cilogon.userinfo"],
+    scope: %i[openid email], #:profile],#, :"org.cilogon.userinfo"],
     response_type: :code,
     issuer: "https://cilogon.org",
     discovery: true,
