@@ -8,7 +8,8 @@ class UserMailer < ActionMailer::Base
   helper MailerHelper
   helper FeedbacksHelper
 
-  default from: Rails.configuration.x.organisation.email
+  default from: Rails.configuration.x.organisation.do_not_reply_email
+  default reply_to: Rails.configuration.x.organisation.email
 
   # rubocop:disable Metrics/AbcSize
   def welcome_notification(user)
