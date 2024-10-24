@@ -32,8 +32,7 @@ namespace :dmp_assistant_upgrade do
 
   # Setting `confirmed_at` to nil will require users to confirm their email addresses when using :confirmable
   # Setting `confirmation_token` to nil will improve the email confirmation-related UX flow for existing users
-  # (For more information regarding this improved UX flow, refer to the following:
-  # `def handle_confirmation_instructions(user)` in `app/controllers/sessions_controller.rb`)
+  # For more info regarding this improved UX flow, see app/controllers/concerns/email_confirmation_handler.rb
   def set_confirmable_cols_to_nil_for_all_users
     count = User.update_all(confirmed_at: nil, confirmation_token: nil, confirmation_sent_at: nil)
     p ":confirmable columns updated to nil for #{count} users"
