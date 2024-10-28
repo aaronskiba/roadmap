@@ -17,6 +17,8 @@ gem 'rails', '~> 6.1'
 #       Analysis of the issue: https://www.theregister.com/2021/03/25/ruby_rails_code/
 gem 'mimemagic'
 
+gem 'psych', '~> 3.3'
+
 # Use Puma as the app server
 gem 'puma', group: :puma, require: false
 
