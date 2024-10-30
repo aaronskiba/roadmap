@@ -12,6 +12,8 @@
 
  - Fixes to CILogon / `openid_connect` Tests [#922](https://github.com/portagenetwork/roadmap/pull/922)
 
+ - Fix Paginating, Sorting, and Searching Issues Within "Research Outputs" Tab [#938](https://github.com/portagenetwork/roadmap/pull/938)
+
 ## [4.1.1+portage-4.2.2] - 2024-09-18
 
 ### Changed

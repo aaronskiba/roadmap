@@ -10,7 +10,6 @@ module Paginable
     # GET /paginable/plans/:plan_id/research_outputs
     def index
       @plan = Plan.find_by(id: params[:plan_id])
-
       # Same @research_outputs assignment as app/controllers/research_outputs_controller.rb
       @research_outputs = ResearchOutput.includes(:repositories).where(plan_id: @plan.id)
       # Same authorize handling as app/controllers/research_outputs_controller.rb
