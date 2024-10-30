@@ -8,6 +8,8 @@
 
  - Bump rexml from 3.3.3 to 3.3.9 [#936](https://github.com/portagenetwork/roadmap/pull/936)
 
+ - Bump actionpack from 6.1.7.8 to 6.1.7.9 [#928](https://github.com/portagenetwork/roadmap/pull/928)
+
 ## [4.1.1+portage-4.2.2] - 2024-09-18
 
 ### Changed
