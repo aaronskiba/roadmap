@@ -14,6 +14,8 @@
 
  - Bump webpack from 5.79.0 to 5.94.0 [#874](https://github.com/portagenetwork/roadmap/pull/874)
 
+ - Bump micromatch from 4.0.5 to 4.0.8 [#876](https://github.com/portagenetwork/roadmap/pull/876)
+
 ## [4.1.1+portage-4.2.2] - 2024-09-18
 
 ### Changed
