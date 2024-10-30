@@ -10,6 +10,8 @@
 
  - Bump actionpack from 6.1.7.8 to 6.1.7.9 [#928](https://github.com/portagenetwork/roadmap/pull/928)
 
+ - Bump puma from 6.4.2 to 6.4.3 [#910](https://github.com/portagenetwork/roadmap/pull/910)
+
 ## [4.1.1+portage-4.2.2] - 2024-09-18
 
 ### Changed
