@@ -6,6 +6,8 @@
 
  - Bump body-parser from 1.20.2 to 1.20.3 [#897](https://github.com/portagenetwork/roadmap/pull/897)
 
+ - Bump rexml from 3.3.3 to 3.3.9 [#936](https://github.com/portagenetwork/roadmap/pull/936)
+
 ## [4.1.1+portage-4.2.2] - 2024-09-18
 
 ### Changed
