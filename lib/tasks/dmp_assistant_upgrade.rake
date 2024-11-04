@@ -78,14 +78,7 @@ namespace :dmp_assistant_upgrade do
     p "identifier_prefix updated from #{old_prefix} to '' for #{identifier_scheme.name} IdentifierScheme"
     p "Updating prefixed value for identifiers with multiple occurences of 'cilogon'"
     p '------------------------------------------------------------------------'
-    # Find all identifiers having multiple occurences of 'cilogon' in their value
-    identifiers = identifier_scheme.identifiers.where('value ~* ?', "#{old_prefix}.+cilogon.+")
-    count = identifiers.count
-    p "(Found #{count} such identifiers)"
-    # identifier_scheme.identifier_prefix was used to prefix identifier.value
-    # Update the affected identifier values from `old_prefix` to ''
-    identifiers.each { |identifier| identifier.update!(value: identifier.value.delete_prefix(old_prefix)) }
-    p "Updated prefixed value from #{old_prefix} to '' for #{count} identifiers"
+    find_and_update_identifiers(identifier_scheme, old_prefix)
     true
   end
 
@@ -93,5 +86,17 @@ namespace :dmp_assistant_upgrade do
     expected_prefix = 'http://cilogon.org/serverE/users/'
     error_msg = "Unexpected identifier_prefix! Expected #{expected_prefix} but got #{prefix}."
     raise error_msg unless prefix == expected_prefix
+  end
+
+  def find_and_update_identifiers(identifier_scheme, old_prefix)
+    # `identifier_scheme.identifiers` == openid_connect-related identifiers
+    # Get identifiers where `.value` has both the old_prefix and multiple occurences of 'cilogon'
+    identifiers = identifier_scheme.identifiers.where('value ~* ?', "#{old_prefix}.+cilogon.+")
+    count = identifiers.count
+    p "(Found #{count} such identifiers)"
+    # identifier_scheme.identifier_prefix was initially used to prefix identifier.value
+    # Update by removing old_prefix from identifier.value
+    identifiers.each { |identifier| identifier.update!(value: identifier.value.delete_prefix(old_prefix)) }
+    p "Updated prefixed value from #{old_prefix} to '' for #{count} identifiers"
   end
 end
