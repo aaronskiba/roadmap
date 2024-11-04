@@ -8,6 +8,8 @@
 
  - Disable Updating of User Emails [#917](https://github.com/portagenetwork/roadmap/pull/917)
 
+ - Apply `translation:sync` to `yaml` Files and Remove Unused `locale/` + `locales/` Files [#937](https://github.com/portagenetwork/roadmap/pull/937)
+
 ### Fixed
 
  - Fix User Lookup Via SSO Email: Make Query Case-Insensitive [#924](https://github.com/portagenetwork/roadmap/pull/924)

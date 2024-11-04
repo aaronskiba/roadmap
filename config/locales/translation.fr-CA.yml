@@ -2,7 +2,7 @@
 # IF YOU UPDATE IT, YOUR CHANGES WILL BE LOST AT THE NEXT SYNC.
 #
 # To update this file, use this translation interface:
-# https://translation.io/ualbertalib/dmp-assistant-test/fr-CA
+# https://translation.io/ualbertalib/dmp-assistant/fr-CA
 #
 ---
 fr-CA:
@@ -116,13 +116,12 @@ fr-CA:
         other: "%{count} erreurs ont empêché d’enregistrer ce(tte) %{resource} :"
       model_invalid: 'Validation échouée : %{errors}'
       required: doit exister
+      url:
     template:
       body: 'Veuillez vérifier les champs suivants : '
       header:
         one: 'Impossible d''enregistrer ce(tte) %{model} : 1 erreur'
         other: 'Impossible d''enregistrer ce(tte) %{model} : %{count} erreurs'
-        # one: " 1 erreur a empêché l’enregistrement de %{model}"
-        # other: "%{count} erreurs ont empêché l’enregistrement de %{model} "
     unavailable_session: |
       La session %{id} n’est plus disponible en mémoire.
 
@@ -337,7 +336,7 @@ fr-CA:
       new:
         contact_us: Communiquez avec nous
         email: Courriel
-        message:
+        message: Message
         name: Prénom
         subject: Objet
         submit: Soumettre
