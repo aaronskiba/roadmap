@@ -18,6 +18,8 @@
 
 ### Changed
 
+ - Prevent Uploading of DB Fields to translation.io Within Test, Development, and UAT Environments [#945](https://github.com/portagenetwork/roadmap/pull/945)
+
  - Update Handling of SSO Linking [#907](https://github.com/portagenetwork/roadmap/pull/907)
  
  - Updated SSO button string [portagenetwork/roadmap#903](https://github.com/portagenetwork/roadmap/issues/903)
