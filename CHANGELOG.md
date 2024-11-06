@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+### Added
+
+ - Add rake task for openid_connect / CILogon cleanup [#944](https://github.com/portagenetwork/roadmap/pull/944)
+
 ### Changed
 
  - Email Confirmation Changes [#923](https://github.com/portagenetwork/roadmap/pull/923)
