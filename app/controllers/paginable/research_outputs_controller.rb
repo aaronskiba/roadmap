@@ -13,7 +13,9 @@ module Paginable
       # Same assignment as app/controllers/research_outputs_controller.rb
       research_outputs = ResearchOutput.includes(:repositories).where(plan_id: @plan.id)
       # Same authorize handling as app/controllers/research_outputs_controller.rb
-      authorize research_outputs.first || ResearchOutput.new(plan_id: @plan.id)
+      # `|| ResearchOutput.new(plan_id: @plan.id)` prevents Pundit::NotDefinedError when a direct
+      # GET /paginable/plans/:id/research_outputs request is made on a plan with 0 research_outputs
+      authorize(research_outputs.first || ResearchOutput.new(plan_id: @plan.id))
       paginable_renderise(
         partial: 'index',
         scope: research_outputs,
