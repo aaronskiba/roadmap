@@ -2,8 +2,18 @@
 
 ## [Unreleased]
 
+### Added
+
+ - Add rake task for openid_connect / CILogon cleanup [#944](https://github.com/portagenetwork/roadmap/pull/944)
+
 ### Changed
 
+ - Email Confirmation Changes [#923](https://github.com/portagenetwork/roadmap/pull/923)
+
+ - Disable Updating of User Emails [#917](https://github.com/portagenetwork/roadmap/pull/917)
+
+ - Apply `translation:sync` to `yaml` Files and Remove Unused `locale/` + `locales/` Files [#937](https://github.com/portagenetwork/roadmap/pull/937)
+ 
  - Bump body-parser from 1.20.2 to 1.20.3 [#897](https://github.com/portagenetwork/roadmap/pull/897)
 
  - Bump rexml from 3.3.3 to 3.3.9 [#936](https://github.com/portagenetwork/roadmap/pull/936)
@@ -16,9 +26,19 @@
 
  - Bump micromatch from 4.0.5 to 4.0.8 [#876](https://github.com/portagenetwork/roadmap/pull/876)
 
+### Fixed
+
+ - Fix User Lookup Via SSO Email: Make Query Case-Insensitive [#924](https://github.com/portagenetwork/roadmap/pull/924)
+
+ - Fixes to CILogon / `openid_connect` Tests [#922](https://github.com/portagenetwork/roadmap/pull/922)
+
+ - Fix Paginating, Sorting, and Searching Issues Within "Research Outputs" Tab [#938](https://github.com/portagenetwork/roadmap/pull/938)
+
 ## [4.1.1+portage-4.2.2] - 2024-09-18
 
 ### Changed
+
+ - Prevent Uploading of DB Fields to translation.io Within Test, Development, and UAT Environments [#945](https://github.com/portagenetwork/roadmap/pull/945)
 
  - Update Handling of SSO Linking [#907](https://github.com/portagenetwork/roadmap/pull/907)
  
