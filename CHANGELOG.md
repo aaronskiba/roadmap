@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [4.1.1+portage-4.2.3] - 2024-11-20
 
 ### Added
 
@@ -27,6 +27,8 @@
  - Bump webpack from 5.79.0 to 5.94.0 [#874](https://github.com/portagenetwork/roadmap/pull/874)
 
  - Bump micromatch from 4.0.5 to 4.0.8 [#876](https://github.com/portagenetwork/roadmap/pull/876)
+
+ - Bump cross-spawn from 7.0.3 to 7.0.6 [#951](https://github.com/portagenetwork/roadmap/pull/951)
 
 ### Fixed
 
