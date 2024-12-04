@@ -65,7 +65,11 @@ COPY --from=builder $INSTALL_PATH $INSTALL_PATH
 # Run container as non-root user
 RUN addgroup -S dmpgroup && adduser -S dmpuser -G dmpgroup && \
     # Update ownership of files that need to be writable during production runtime
-    chown -R dmpuser:dmpgroup ${INSTALL_PATH}/tmp ${INSTALL_PATH}/public/
+    chown -R dmpuser:dmpgroup ${INSTALL_PATH}/tmp \
+        ${INSTALL_PATH}/public/ \
+        # For executing translation:sync
+        ${INSTALL_PATH}/config/locale \
+        ${INSTALL_PATH}/config/locales
 
 USER dmpuser
 
