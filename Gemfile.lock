@@ -204,6 +204,7 @@ GEM
       net-http
     ffi (1.17.0-arm64-darwin)
     ffi (1.17.0-x86_64-linux-gnu)
+    ffi (1.17.0-x86_64-linux-musl)
     flag_shih_tzu (0.3.23)
     fog-aws (3.21.0)
       fog-core (~> 2.1)
@@ -619,6 +620,7 @@ PLATFORMS
   arm64-darwin-21
   arm64-darwin-22
   x86_64-linux
+  x86_64-linux-musl
 
 DEPENDENCIES
   activerecord-nulldb-adapter
