@@ -60,3 +60,5 @@ jobs:
           cache-from: type=registry,ref=aaronskiba/roadmap:build-cache
           # Push the updated build cache to Docker Hub
           cache-to: type=registry,ref=aaronskiba/roadmap:build-cache,mode=max
+          build-args: |
+            BASE_URL=${{ secrets.UAT_BASE_URL }}
