@@ -2,7 +2,7 @@ FROM surnet/alpine-wkhtmltopdf:3.20.2-0.12.6-small AS wkhtmltopdf
 
 FROM ruby:3.1.4-alpine AS builder
 
-ENV INSTALL_PATH=/usr/src/app/ \
+ENV INSTALL_PATH=/usr/src/app \
     RAILS_ENV=production \
     NODE_ENV=production \
     BUNDLE_WITHOUT='development:test:mysql:aws:sandbox:ci:wkhtmltopdf' \
@@ -35,7 +35,8 @@ RUN yarn install --prod --frozen-lockfile --check-files
 COPY . $INSTALL_PATH
 
 # Precompile assets within builder stage
-RUN bundle exec rake assets:precompile
+RUN bundle exec rake assets:precompile && \
+rm -rf ${INSTALL_PATH}/node_modules ${INSTALL_PATH}/tmp/*
 
 FROM ruby:3.1.4-alpine AS production
 
