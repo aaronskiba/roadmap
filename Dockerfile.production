@@ -7,7 +7,7 @@ ENV INSTALL_PATH=/usr/src/app/ \
     NODE_ENV=production \
     BUNDLE_WITHOUT='development:test:mysql:aws:sandbox:ci:wkhtmltopdf' \
     # Dummy values to enable `rake assets:precompile` without a real db
-    DATABASE_URL=nulldb://localhost \
+    DATABASE_URL=nulldb://nohost \
     SECRET_KEY_BASE=foo
 
 # - build-base && musl-dev: required for compiling native extensions
@@ -66,10 +66,10 @@ COPY --from=builder $INSTALL_PATH $INSTALL_PATH
 RUN addgroup -S dmpgroup && adduser -S dmpuser -G dmpgroup && \
     # Update ownership of files that need to be writable during production runtime
     chown -R dmpuser:dmpgroup ${INSTALL_PATH}/tmp \
-        ${INSTALL_PATH}/public/ \
-        # For executing translation:sync
-        ${INSTALL_PATH}/config/locale \
-        ${INSTALL_PATH}/config/locales
+    ${INSTALL_PATH}/public/ \
+    # For executing translation:sync
+    ${INSTALL_PATH}/config/locale \
+    ${INSTALL_PATH}/config/locales
 
 USER dmpuser
 
