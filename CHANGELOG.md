@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased]
+## [4.1.1+portage-4.2.3] - 2024-11-20
 
 ### Added
 
@@ -8,11 +8,27 @@
 
 ### Changed
 
- - Email Confirmation Changes [#923](https://github.com/portagenetwork/roadmap/pull/923)
+ - Enable Translations On `/users/confirmation/new` Page [#953](https://github.com/portagenetwork/roadmap/pull/953)
+
+ - Email Confirmation Changes [#923](https://github.com/portagenetwork/roadmap/pull/923), [#952](https://github.com/portagenetwork/roadmap/pull/952)
 
  - Disable Updating of User Emails [#917](https://github.com/portagenetwork/roadmap/pull/917)
 
  - Apply `translation:sync` to `yaml` Files and Remove Unused `locale/` + `locales/` Files [#937](https://github.com/portagenetwork/roadmap/pull/937)
+ 
+ - Bump body-parser from 1.20.2 to 1.20.3 [#897](https://github.com/portagenetwork/roadmap/pull/897)
+
+ - Bump rexml from 3.3.3 to 3.3.9 [#936](https://github.com/portagenetwork/roadmap/pull/936)
+
+ - Bump actionpack from 6.1.7.8 to 6.1.7.9 [#928](https://github.com/portagenetwork/roadmap/pull/928)
+
+ - Bump puma from 6.4.2 to 6.4.3 [#910](https://github.com/portagenetwork/roadmap/pull/910)
+
+ - Bump webpack from 5.79.0 to 5.94.0 [#874](https://github.com/portagenetwork/roadmap/pull/874)
+
+ - Bump micromatch from 4.0.5 to 4.0.8 [#876](https://github.com/portagenetwork/roadmap/pull/876)
+
+ - Bump cross-spawn from 7.0.3 to 7.0.6 [#951](https://github.com/portagenetwork/roadmap/pull/951)
 
 ### Fixed
 
