@@ -49,9 +49,9 @@ ENV INSTALL_PATH=/usr/src/app \
     LC_ALL=en_CA.UTF-8
 
 # - postgresql-client: Required for pg gem to connect to PostgreSQL
-# - curl: Required for healthcheck
+# - wget: Required for healthcheck
 RUN apk add --no-cache \
-    postgresql-client curl
+    postgresql-client wget
 
 WORKDIR $INSTALL_PATH
 
@@ -77,4 +77,4 @@ USER dmpuser
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD curl -f ${BASE_URL}/api/v1/heartbeat || exit 1
+    CMD wget -qO- ${BASE_URL}/api/v1/heartbeat || exit 1
