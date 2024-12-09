@@ -12,6 +12,10 @@ module Users
       auth = request.env['omniauth.auth']
       user = User.from_omniauth(auth)
 
+      Rails.logger.warn "request.env: #{request.env.inspect}"
+      Rails.logger.warn '-------------------------------------------------------------------------------------------------------'
+      Rails.logger.warn "auth: #{auth.inspect}"
+
       if auth.info.email.nil? && user.nil?
         # If email is missing we need to request the user to register with DMP.
         # User email can be missing if the usFFvate or trusted clients only we won't get the value.
