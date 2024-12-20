@@ -30,7 +30,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ualbertalib/dmp_roadmap
+          images: aaronskiba/roadmap
           # GitHub tag matching and Docker tag generation are contingent on the event type
           # (The event type is either 'release' or 'push' of a '*-uat-*' tag)
           tags: |
