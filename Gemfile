@@ -171,7 +171,7 @@ gem 'autoprefixer-rails'
 # ========= #
 
 # Provides binaries for WKHTMLTOPDF project in an easily accessible package.
-gem 'wkhtmltopdf-binary'
+gem 'wkhtmltopdf-binary', group: :wkhtmltopdf
 
 # PDF generator (from HTML) gem for Ruby on Rails
 # (https://github.com/mileszs/wicked_pdf)

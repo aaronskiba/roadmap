@@ -1,54 +1,80 @@
-FROM ruby:3.1.4
+FROM surnet/alpine-wkhtmltopdf:3.20.2-0.12.6-small AS wkhtmltopdf
 
-# Setup bundle to install gems to volume
-ENV BUNDLE_PATH=/bundle/ \
-    BUNDLE_BIN=/bundle/bin \
-    GEM_HOME=/bundle \
-    DEBIAN_FRONTEND="noninteractive"
-ENV Path="${BUNDLE_BIN}:${PATH}"
+FROM ruby:3.1.4-alpine AS builder
 
-RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
-    curl -sL https://deb.nodesource.com/setup_16.x | bash && \
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+ENV INSTALL_PATH=/usr/src/app \
+    RAILS_ENV=production \
+    NODE_ENV=production \
+    BUNDLE_WITHOUT='development:test:mysql:aws:sandbox:ci:wkhtmltopdf' \
+    # Dummy values to enable `rake assets:precompile` without a real db
+    DATABASE_URL=nulldb://nohost \
+    SECRET_KEY_BASE=foo
 
-# Dependancies
-RUN apt-get update -qq && \
-  apt-get install --no-install-recommends -y \
-  default-mysql-client \
-  gettext \
-  nodejs \
-  yarn \
-  locales
-
-ENV LANG=fr_CA.UTF-8 \
-    LANGUAGE=fr_CA:fr \ 
-    LC_ALL=fr_CA.UTF-8 
-
-RUN wget --quiet https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.3/wkhtmltox-0.12.3_linux-generic-amd64.tar.xz && \
-    tar vxf wkhtmltox-0.12.3_linux-generic-amd64.tar.xz && \
-    cp wkhtmltox/bin/wk* /usr/local/bin/ && \
-    rm -rf wkhtmltox
-
-ARG INSTALL_PATH=/usr/src/app/
-ENV INSTALL_PATH $INSTALL_PATH
+# - build-base && musl-dev: required for compiling native extensions
+# - postgresql-dev: required to compile pg gem
+# - shared-mime-info:: required to compile mimemagic gem
+# - tzdata: required to compile tzinfo gem
+RUN apk add --no-cache \
+    build-base musl-dev postgresql-dev git nodejs yarn shared-mime-info tzdata
 
 WORKDIR $INSTALL_PATH
-COPY Gemfile* $INSTALL_PATH
-# Install Bundler with the specified version from Gemfile.lock
-RUN gem install bundler -v "$(tail -1 Gemfile.lock | tr -d " ")"
 
-# for 3.1.0 test, need both mysql and psql group installed
-RUN bundle config --local build.sassc --disable-march-tune-native
-RUN bundle config set --local without 'development pssql test thin aws ci' 
-RUN RAILS_ENV=production bundle install --jobs=3 --retry=3
+# For Bundler caching
+COPY Gemfile* $INSTALL_PATH
+RUN gem install bundler -v "$(tail -1 Gemfile.lock | tr -d " ")" && \
+    bundle config set --local frozen 'true' && \
+    # `deployment` flag installs gems to `vendor/bundle` directory
+    # https://bundler.io/guides/deploying.html#deploying-your-application
+    bundle config set --local deployment 'true' && \
+    bundle install --jobs=3 --retry=3
+
+# For Yarn caching
+COPY package.json yarn.lock $INSTALL_PATH
+RUN yarn install --prod --frozen-lockfile --check-files
 
 COPY . $INSTALL_PATH
-RUN NODE_ENV=production yarn install --prod --check-files
-RUN bundle config set force_ruby_platform true
 
-# /bundle/ruby/2.7.0/bin/rake error: Could not find nokogiri-1.13.6, mini_portile2-2.5.3 in locally installed gems (Bundler::GemNotFound)
-RUN bundle update rake 
-RUN DATABASE_URL=nulldb://user:test@127.0.0.1/roadmap RAILS_ENV=production SECRET_KEY_BASE=change_me DEVISE_SECRET_KEY=pickasecuretoken bundle exec rake assets:precompile
+# Precompile assets within builder stage
+RUN bundle exec rake assets:precompile && \
+rm -rf ${INSTALL_PATH}/node_modules ${INSTALL_PATH}/tmp/*
+
+FROM ruby:3.1.4-alpine AS production
+
+ARG BASE_URL
+ENV INSTALL_PATH=/usr/src/app \
+    # Used for HEALTHCHECK
+    BASE_URL=$BASE_URL \
+    # Needed for gettext gem
+    LANG=en_CA.UTF-8 \
+    LC_ALL=en_CA.UTF-8
+
+# - postgresql-client: Required for pg gem to connect to PostgreSQL
+# - wget: Required for healthcheck
+RUN apk add --no-cache \
+    postgresql-client wget
+
+WORKDIR $INSTALL_PATH
+
+# Copy files from wkhtmltopdf and builder stages
+COPY --from=wkhtmltopdf /bin/wkhtmltopdf /usr/bin/wkhtmltopdf
+COPY --from=wkhtmltopdf /usr/lib/ /usr/lib/
+COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
+COPY --from=builder /usr/share/mime /usr/share/mime
+COPY --from=builder /usr/bin/node /usr/bin/node
+COPY --from=builder $INSTALL_PATH $INSTALL_PATH
+
+# Run container as non-root user
+RUN addgroup -S dmpgroup && adduser -S dmpuser -G dmpgroup && \
+    # Update ownership of files that need to be writable during production runtime
+    chown -R dmpuser:dmpgroup ${INSTALL_PATH}/tmp \
+    ${INSTALL_PATH}/public/ \
+    # For executing translation:sync
+    ${INSTALL_PATH}/config/locale \
+    ${INSTALL_PATH}/config/locales
+
+USER dmpuser
 
 EXPOSE 3000
-CMD bundle exec puma -C config/puma.rb
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+    CMD wget -qO- ${BASE_URL}/api/v1/heartbeat || exit 1
