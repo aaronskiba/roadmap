@@ -57,15 +57,36 @@ ENV INSTALL_PATH=/usr/src/app \
 # - postgresql-client: Required for pg gem to connect to PostgreSQL
 # - wget: Required for healthcheck
 RUN apk add --no-cache \
-    postgresql-client wget
+    postgresql-client wget \
+    # Install dependencies for wkhtmltopdf (See https://github.com/Surnet/docker-wkhtmltopdf/pkgs/container/alpine-wkhtmltopdf#other-images)
+    libstdc++ \
+    libx11 \
+    libxrender \
+    libxext \
+    libssl3 \
+    ca-certificates \
+    fontconfig \
+    freetype \
+    ttf-dejavu \
+    ttf-droid \
+    ttf-freefont \
+    ttf-liberation \
+    # more fonts
+  && apk add --no-cache --virtual .build-deps \
+    msttcorefonts-installer \
+  # Install microsoft fonts
+  && update-ms-fonts \
+  && fc-cache -f \
+  # Clean up when done
+  && rm -rf /tmp/* \
+  && apk del .build-deps 
 
 WORKDIR $INSTALL_PATH
 
 # Copy binaries for wkhtmltopdf and node
 COPY --from=wkhtmltopdf /bin/wkhtmltopdf /usr/bin/wkhtmltopdf
 COPY --from=builder /usr/bin/node /usr/bin/node
-# Copy shared libraries for wkhtmltopdf and Node.js
-COPY --from=wkhtmltopdf /usr/lib/ /usr/lib/
+# Copy shared libraries for Node.js
 COPY --from=builder /node-lib/ /usr/lib/
 # Copy data for timezone and mime types
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
