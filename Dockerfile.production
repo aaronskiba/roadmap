@@ -32,12 +32,6 @@ RUN gem install bundler -v "$(tail -1 Gemfile.lock | tr -d " ")" && \
 COPY package.json yarn.lock $INSTALL_PATH
 RUN yarn install --prod --frozen-lockfile --check-files
 
-# Node.js is required in the production image.
-# Copy all libraries required by the Node.js binary into /node-lib
-# This saves us from copying the entire /usr/lib builder directory
-RUN mkdir -p /node-lib && \
-    ldd /usr/bin/node | awk '/=>/ { print $3 }' | xargs -I '{}' cp '{}' /node-lib
-
 COPY . $INSTALL_PATH
 
 # Precompile assets within builder stage
@@ -57,7 +51,7 @@ ENV INSTALL_PATH=/usr/src/app \
 # - postgresql-client: Required for pg gem to connect to PostgreSQL
 # - wget: Required for healthcheck
 RUN apk add --no-cache \
-    postgresql-client wget \
+    postgresql-client wget nodejs \
     # Install dependencies for wkhtmltopdf (See https://github.com/Surnet/docker-wkhtmltopdf/pkgs/container/alpine-wkhtmltopdf#other-images)
     libstdc++ \
     libx11 \
@@ -83,11 +77,8 @@ RUN apk add --no-cache \
 
 WORKDIR $INSTALL_PATH
 
-# Copy binaries for wkhtmltopdf and node
+# Copy wkhtmltopdf binary
 COPY --from=wkhtmltopdf /bin/wkhtmltopdf /usr/bin/wkhtmltopdf
-COPY --from=builder /usr/bin/node /usr/bin/node
-# Copy shared libraries for Node.js
-COPY --from=builder /node-lib/ /usr/lib/
 # Copy data for timezone and mime types
 COPY --from=builder /usr/share/zoneinfo /usr/share/zoneinfo
 COPY --from=builder /usr/share/mime /usr/share/mime
