@@ -1,3 +1,4 @@
+FROM node:20.15.1-alpine AS node
 FROM surnet/alpine-wkhtmltopdf:3.21.2-0.12.6-small AS wkhtmltopdf
 
 FROM ruby:3.1.4-alpine AS builder
@@ -15,9 +16,15 @@ ENV INSTALL_PATH=/usr/src/app \
 # - shared-mime-info:: required to compile mimemagic gem
 # - tzdata: required to compile tzinfo gem
 RUN apk add --no-cache \
-    build-base musl-dev postgresql-dev git nodejs yarn shared-mime-info tzdata
+    build-base musl-dev postgresql-dev git shared-mime-info tzdata
 
 WORKDIR $INSTALL_PATH
+
+COPY --from=node /usr/lib /usr/lib
+COPY --from=node /usr/local/lib /usr/local/lib
+COPY --from=node /usr/local/include /usr/local/include
+COPY --from=node /usr/local/bin /usr/local/bin
+COPY --from=node /opt /opt
 
 # For Bundler caching
 COPY Gemfile* $INSTALL_PATH
@@ -51,7 +58,7 @@ ENV INSTALL_PATH=/usr/src/app \
 # - postgresql-client: Required for pg gem to connect to PostgreSQL
 # - wget: Required for healthcheck
 RUN apk add --no-cache \
-    postgresql-client wget nodejs \
+    postgresql-client wget \
     # Install dependencies for wkhtmltopdf (See https://github.com/Surnet/docker-wkhtmltopdf/pkgs/container/alpine-wkhtmltopdf#other-images)
     libstdc++ \
     libx11 \
@@ -77,6 +84,10 @@ RUN apk add --no-cache \
 
 WORKDIR $INSTALL_PATH
 
+COPY --from=node /usr/lib /usr/lib
+COPY --from=node /usr/local/lib /usr/local/lib
+COPY --from=node /usr/local/include /usr/local/include
+COPY --from=node /usr/local/bin /usr/local/bin
 # Copy wkhtmltopdf binary
 COPY --from=wkhtmltopdf /bin/wkhtmltopdf /usr/bin/wkhtmltopdf
 # Copy data for timezone and mime types
