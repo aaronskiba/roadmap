@@ -1,6 +1,9 @@
-FROM surnet/alpine-wkhtmltopdf:3.21.2-0.12.6-small AS wkhtmltopdf
+ARG RUBY_VERSION=3.1.4-alpine
+ARG WKHTMLTOPDF_VERSION=3.21.2-0.12.6-small
 
-FROM ruby:3.1.4-alpine AS builder
+FROM surnet/alpine-wkhtmltopdf:$WKHTMLTOPDF_VERSION AS wkhtmltopdf
+
+FROM ruby:$RUBY_VERSION AS builder
 
 ENV INSTALL_PATH=/usr/src/app \
     RAILS_ENV=production \
@@ -15,7 +18,14 @@ ENV INSTALL_PATH=/usr/src/app \
 # - shared-mime-info:: required to compile mimemagic gem
 # - tzdata: required to compile tzinfo gem
 RUN apk add --no-cache \
-    build-base musl-dev postgresql-dev git nodejs yarn shared-mime-info tzdata
+    build-base \
+    musl-dev \
+    postgresql-dev \
+    git \
+    nodejs \
+    yarn \
+    shared-mime-info \
+    tzdata
 
 WORKDIR $INSTALL_PATH
 
@@ -38,12 +48,11 @@ COPY . $INSTALL_PATH
 RUN bundle exec rake assets:precompile && \
 rm -rf ${INSTALL_PATH}/node_modules ${INSTALL_PATH}/tmp/*
 
-FROM ruby:3.1.4-alpine AS production
+FROM ruby:$RUBY_VERSION AS production
 
 ARG BASE_URL
 ENV INSTALL_PATH=/usr/src/app \
-    # Used for HEALTHCHECK
-    BASE_URL=$BASE_URL \
+    HEALTHCHECK_URL=${BASE_URL}/api/v1/heartbeat \
     # Needed for gettext gem
     LANG=en_CA.UTF-8 \
     LC_ALL=en_CA.UTF-8
@@ -51,7 +60,9 @@ ENV INSTALL_PATH=/usr/src/app \
 # - postgresql-client: Required for pg gem to connect to PostgreSQL
 # - wget: Required for healthcheck
 RUN apk add --no-cache \
-    postgresql-client wget nodejs \
+    postgresql-client \
+    wget \
+    nodejs \
     # Install dependencies for wkhtmltopdf (See https://github.com/Surnet/docker-wkhtmltopdf/pkgs/container/alpine-wkhtmltopdf#other-images)
     libstdc++ \
     libx11 \
@@ -99,4 +110,4 @@ USER dmpuser
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD wget -qO- ${BASE_URL}/api/v1/heartbeat || exit 1
+    CMD wget -qO- $HEALTHCHECK_URL || exit 1
