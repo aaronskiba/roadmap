@@ -53,9 +53,9 @@ rm -rf ${INSTALL_PATH}/node_modules ${INSTALL_PATH}/tmp/*
 FROM ruby:$RUBY_VERSION AS production
 
 ARG NODE_VERSION
-# Used for HEALTHCHECK
 ARG BASE_URL
-ENV INSTALL_PATH=/usr/src/app
+ENV INSTALL_PATH=/usr/src/app \
+    HEALTHCHECK_URL=${BASE_URL}/api/v1/heartbeat
 
 # - postgresql-client: Required for pg gem to connect to PostgreSQL
 # - wget: Required for healthcheck
@@ -110,4 +110,4 @@ USER dmpuser
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD wget -qO- ${BASE_URL}/api/v1/heartbeat || exit 1
+    CMD wget -qO- ${HEALTHCHECK_URL} || exit 1
