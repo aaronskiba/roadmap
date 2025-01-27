@@ -1,10 +1,12 @@
 ARG RUBY_VERSION=3.1.4-alpine
+ARG NODE_VERSION=20.15.1-r0
 ARG WKHTMLTOPDF_VERSION=3.21.2-0.12.6-small
 
 FROM surnet/alpine-wkhtmltopdf:$WKHTMLTOPDF_VERSION AS wkhtmltopdf
 
 FROM ruby:$RUBY_VERSION AS builder
 
+ARG NODE_VERSION
 ENV INSTALL_PATH=/usr/src/app \
     RAILS_ENV=production \
     NODE_ENV=production \
@@ -14,15 +16,15 @@ ENV INSTALL_PATH=/usr/src/app \
     SECRET_KEY_BASE=foo
 
 # - build-base && musl-dev: required for compiling native extensions
-# - postgresql-dev: required to compile pg gem
+# - postgresql16-dev: required to compile pg gem
 # - shared-mime-info:: required to compile mimemagic gem
 # - tzdata: required to compile tzinfo gem
-RUN apk add --no-cache \
+RUN apk update && apk add --no-cache \
     build-base \
     musl-dev \
-    postgresql-dev \
+    postgresql16-dev \
     git \
-    nodejs \
+    nodejs=$NODE_VERSION \
     yarn \
     shared-mime-info \
     tzdata
@@ -50,16 +52,17 @@ rm -rf ${INSTALL_PATH}/node_modules ${INSTALL_PATH}/tmp/*
 
 FROM ruby:$RUBY_VERSION AS production
 
+ARG NODE_VERSION
 ARG BASE_URL
 ENV INSTALL_PATH=/usr/src/app \
     HEALTHCHECK_URL=${BASE_URL}/api/v1/heartbeat
 
-# - postgresql-client: Required for pg gem to connect to PostgreSQL
+# - postgresql16-client: Required for pg gem to connect to PostgreSQL
 # - wget: Required for healthcheck
-RUN apk add --no-cache \
-    postgresql-client \
+RUN apk update && apk add --no-cache \
+    postgresql16-client \
     wget \
-    nodejs \
+    nodejs=$NODE_VERSION \
     # Install dependencies for wkhtmltopdf (See https://github.com/Surnet/docker-wkhtmltopdf/pkgs/container/alpine-wkhtmltopdf#other-images)
     libstdc++ \
     libx11 \
