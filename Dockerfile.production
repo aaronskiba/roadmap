@@ -55,10 +55,7 @@ FROM ruby:$RUBY_VERSION AS production
 ARG NODE_VERSION
 # Used for HEALTHCHECK
 ARG BASE_URL
-ENV INSTALL_PATH=/usr/src/app \
-    # Needed for gettext gem
-    LANG=en_CA.UTF-8 \
-    LC_ALL=en_CA.UTF-8
+ENV INSTALL_PATH=/usr/src/app
 
 # - postgresql-client: Required for pg gem to connect to PostgreSQL
 # - wget: Required for healthcheck
