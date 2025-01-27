@@ -52,10 +52,7 @@ FROM ruby:$RUBY_VERSION AS production
 
 ARG BASE_URL
 ENV INSTALL_PATH=/usr/src/app \
-    HEALTHCHECK_URL=${BASE_URL}/api/v1/heartbeat \
-    # Needed for gettext gem
-    LANG=en_CA.UTF-8 \
-    LC_ALL=en_CA.UTF-8
+    HEALTHCHECK_URL=${BASE_URL}/api/v1/heartbeat
 
 # - postgresql-client: Required for pg gem to connect to PostgreSQL
 # - wget: Required for healthcheck
