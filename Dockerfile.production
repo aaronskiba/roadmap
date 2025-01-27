@@ -1,5 +1,5 @@
 ARG RUBY_VERSION=3.1.4-alpine
-ARG NODE_VERSION=20.15.1
+ARG NODE_VERSION=20.15.1-r0
 ARG WKHTMLTOPDF_VERSION=3.21.2-0.12.6-small
 
 FROM surnet/alpine-wkhtmltopdf:$WKHTMLTOPDF_VERSION AS wkhtmltopdf
@@ -19,8 +19,8 @@ ENV INSTALL_PATH=/usr/src/app \
 # - postgresql-dev: required to compile pg gem
 # - shared-mime-info:: required to compile mimemagic gem
 # - tzdata: required to compile tzinfo gem
-RUN apk add --no-cache \
-    build-base musl-dev postgresql-dev git nodejs=$NODE_VERSION yarn shared-mime-info tzdata
+RUN apk update && apk add --no-cache \
+    build-base musl-dev postgresql-dev git nodejs yarn shared-mime-info tzdata
 
 WORKDIR $INSTALL_PATH
 
@@ -55,8 +55,8 @@ ENV INSTALL_PATH=/usr/src/app \
 
 # - postgresql-client: Required for pg gem to connect to PostgreSQL
 # - wget: Required for healthcheck
-RUN apk add --no-cache \
-    postgresql-client wget nodejs=$NODE_VERSION \
+RUN apk update && apk add --no-cache \
+    postgresql-client wget nodejs \
     # Install dependencies for wkhtmltopdf (See https://github.com/Surnet/docker-wkhtmltopdf/pkgs/container/alpine-wkhtmltopdf#other-images)
     libstdc++ \
     libx11 \
