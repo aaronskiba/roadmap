@@ -22,7 +22,7 @@ ENV INSTALL_PATH=/usr/src/app \
 RUN apk update && apk add --no-cache \
     build-base \
     musl-dev \
-    postgresql-dev \
+    postgresql16-dev \
     git \
     nodejs=$NODE_VERSION \
     yarn \
@@ -110,4 +110,4 @@ USER dmpuser
 EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
-    CMD wget -qO- ${HEALTHCHECK_URL} || exit 1
+    CMD wget -qO- $HEALTHCHECK_URL || exit 1
