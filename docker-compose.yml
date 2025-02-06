@@ -17,11 +17,12 @@ services:
     env_file:
       - ./.env
     environment:
-      BUNDLE_PATH: 'vendor/bundle'
-      WICKED_PDF_PATH: '/usr/bin/wkhtmltopdf'
-      BUNDLE_WITHOUT: 'development:test:mysql:aws:sandbox:ci:wkhtmltopdf'
+      BUNDLE_PATH: vendor/bundle
+      WICKED_PDF_PATH: /usr/bin/wkhtmltopdf
+      BUNDLE_WITHOUT: development:test:mysql:aws:sandbox:ci:wkhtmltopdf
       RAILS_ENV: production
       NODE_ENV: production
+      LC_ALL: en_CA.UTF-8
     ports:
       - "3000:3000"
     depends_on:
