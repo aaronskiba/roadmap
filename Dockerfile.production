@@ -58,12 +58,17 @@ ENV INSTALL_PATH=/usr/src/app \
     HEALTHCHECK_URL=${BASE_URL}/api/v1/heartbeat
 
 # - postgresql16-client: Required for pg gem to connect to PostgreSQL
+# - imagemagick: Required for dragonfly gem to process images
+# - libjpeg-turbo: Adds support for processing JPEG images
 # - wget: Required for healthcheck
 RUN apk update && apk add --no-cache \
     postgresql16-client \
+    imagemagick \
+    libjpeg-turbo \
     wget \
     nodejs=$NODE_VERSION \
-    # Install dependencies for wkhtmltopdf (See https://github.com/Surnet/docker-wkhtmltopdf/pkgs/container/alpine-wkhtmltopdf#other-images)
+    # Install dependencies for wkhtmltopdf
+    # (See https://github.com/Surnet/docker-wkhtmltopdf/pkgs/container/alpine-wkhtmltopdf#other-images)
     libstdc++ \
     libx11 \
     libxrender \
@@ -98,6 +103,8 @@ COPY --from=builder $INSTALL_PATH $INSTALL_PATH
 
 # Run container as non-root user
 RUN addgroup -S dmpgroup && adduser -S dmpuser -G dmpgroup && \
+    # Create env-specific directory for dragonfly datastore
+    mkdir -p ${INSTALL_PATH}/public/system/dragonfly/${RAILS_ENV} && \
     # Update ownership of files that need to be writable during production runtime
     chown -R dmpuser:dmpgroup ${INSTALL_PATH}/tmp \
     ${INSTALL_PATH}/public/ \
