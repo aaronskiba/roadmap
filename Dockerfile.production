@@ -61,6 +61,7 @@ ENV INSTALL_PATH=/usr/src/app \
 # - wget: Required for healthcheck
 RUN apk update && apk add --no-cache \
     postgresql16-client \
+    imagemagick \
     wget \
     nodejs=$NODE_VERSION \
     # Install dependencies for wkhtmltopdf (See https://github.com/Surnet/docker-wkhtmltopdf/pkgs/container/alpine-wkhtmltopdf#other-images)
