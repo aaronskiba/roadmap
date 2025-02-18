@@ -99,6 +99,8 @@ COPY --from=builder $INSTALL_PATH $INSTALL_PATH
 
 # Run container as non-root user
 RUN addgroup -S dmpgroup && adduser -S dmpuser -G dmpgroup && \
+    # Create env-specific directory for Dragonfly datastore
+    mkdir -p ${INSTALL_PATH}/public/system/dragonfly/${RAILS_ENV} && \
     # Update ownership of files that need to be writable during production runtime
     chown -R dmpuser:dmpgroup ${INSTALL_PATH}/tmp \
     ${INSTALL_PATH}/public/ \
