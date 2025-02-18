@@ -62,6 +62,7 @@ ENV INSTALL_PATH=/usr/src/app \
 RUN apk update && apk add --no-cache \
     postgresql16-client \
     imagemagick \
+    libjpeg-turbo \
     wget \
     nodejs=$NODE_VERSION \
     # Install dependencies for wkhtmltopdf (See https://github.com/Surnet/docker-wkhtmltopdf/pkgs/container/alpine-wkhtmltopdf#other-images)
