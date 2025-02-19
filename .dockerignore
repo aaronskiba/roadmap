@@ -5,6 +5,8 @@ config/branding.yml.sample
 config/credentials.yml.mysql2
 config/credentials.yml.postgresql
 config/database.yml.sample
+config/locale/*
+!config/locale/i18n_placeholders.rb
 config/spring.rb
 config/environments/*
 !config/environments/production.rb
