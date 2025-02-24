@@ -56,7 +56,7 @@ jobs:
           file: Dockerfile.production
           target: web
           push: true
-          tags: web-${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}-web
           # Fetch existing build cache from Docker Hub, if available
           cache-from: type=registry,ref=aaronskiba/roadmap:build-cache
           # Push the updated build cache to Docker Hub
@@ -72,7 +72,7 @@ jobs:
           file: Dockerfile.production
           target: api
           push: true
-          tags: api-${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.meta.outputs.tags }}-api
           # Fetch existing build cache from Docker Hub, if available
           cache-from: type=registry,ref=aaronskiba/roadmap:build-cache
           # Push the updated build cache to Docker Hub
