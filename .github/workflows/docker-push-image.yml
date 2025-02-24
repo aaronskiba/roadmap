@@ -31,7 +31,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ualbertalib/dmp_roadmap
+          images: aaronskiba/roadmap
           tags: |
             type=match,pattern=.+portage-(\d\.\d\.\d),group=1
             type=raw,value=production
@@ -57,9 +57,9 @@ jobs:
           push: true
           tags: web-${{ steps.meta.outputs.tags }}
           # Fetch existing build cache from Docker Hub, if available
-          cache-from: type=registry,ref=ualbertalib/dmp_roadmap:build-cache
+          cache-from: type=registry,ref=aaronskiba/roadmap:build-cache
           # Push the updated build cache to Docker Hub
-          cache-to: type=registry,ref=ualbertalib/dmp_roadmap:build-cache,mode=max
+          cache-to: type=registry,ref=aaronskiba/roadmap:build-cache,mode=max
           # SERVER_NAME is used to set `server_name` in nginx.conf
           build-args: |
             SERVER_NAME=uat.library.ualberta.ca
@@ -73,9 +73,9 @@ jobs:
           push: true
           tags: api-${{ steps.meta.outputs.tags }}
           # Fetch existing build cache from Docker Hub, if available
-          cache-from: type=registry,ref=ualbertalib/dmp_roadmap:build-cache
+          cache-from: type=registry,ref=aaronskiba/roadmap:build-cache
           # Push the updated build cache to Docker Hub
-          cache-to: type=registry,ref=ualbertalib/dmp_roadmap:build-cache,mode=max
+          cache-to: type=registry,ref=aaronskiba/roadmap:build-cache,mode=max
           # BASE_URL is used to set url for HEALTHCHECK in Dockerfile.production
           build-args: |
             BASE_URL=https://uat.library.ualberta.ca:3000
