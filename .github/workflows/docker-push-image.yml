@@ -36,7 +36,6 @@ jobs:
             latest=false
           tags: |
             type=match,pattern=.+portage-(\d\.\d\.\d),group=1
-            type=raw,value=production
 
       - name: Cache Gem dependencies
         uses: actions/cache@v3
