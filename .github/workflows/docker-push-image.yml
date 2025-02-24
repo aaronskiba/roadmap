@@ -32,10 +32,11 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: aaronskiba/roadmap
+          flavor: |
+            latest=false
           tags: |
             type=match,pattern=.+portage-(\d\.\d\.\d),group=1
             type=raw,value=production
-            type=ref,pattern=latest
 
       - name: Cache Gem dependencies
         uses: actions/cache@v3
