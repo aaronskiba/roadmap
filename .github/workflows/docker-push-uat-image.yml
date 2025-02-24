@@ -48,10 +48,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gems-${{ hashFiles('Gemfile') }}
             ${{ runner.os }}-gems-
-      
-      - name: Debug extracted metadata
-        run: |
-          echo "Extracted tags: ${{ steps.meta.outputs.tags }}"
 
       - name: Build and push the web stage image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
