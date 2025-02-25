@@ -34,7 +34,7 @@ jobs:
         with:
           images: aaronskiba/roadmap
           flavor: |
-            suffix=-web
+            suffix=-web,onlatest=true
           tags: |
             type=match,pattern=.+portage-(\d+\.\d+\.\d+-uat-\d+),group=1
             type=raw,value=uat
