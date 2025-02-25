@@ -76,9 +76,9 @@ jobs:
           tags: |
             ${{ steps.meta_api.outputs.tags }}
           # Fetch existing build cache from Docker Hub, if available
-          cache-from: type=registry,ref=aaronskiba/roadmap:build-cache
+          cache-from: type=registry,ref=aaronskiba/roadmap:build-cache-api
           # Push the updated build cache to Docker Hub
-          cache-to: type=registry,ref=aaronskiba/roadmap:build-cache,mode=max
+          cache-to: type=registry,ref=aaronskiba/roadmap:build-cache-api,mode=max
           build-args: |
             SERVER_NAME=uat.library.ualberta.ca
 
@@ -91,10 +91,10 @@ jobs:
           push: true
           tags: |
             ${{ steps.meta_web.outputs.tags }}
-          # Within `web` stage, fetch the build-cache we pushed in the `api` stage
-          # (`web` stage immediately follows `api` stage in Dockerfile.production)
-          cache-from: type=registry,ref=aaronskiba/roadmap:build-cache
-          # Skip `cache-to:` (Do not overwrite build-cache pushed by the `api` stage)
-          # SERVER_NAME is used to set `server_name` in nginx.conf
+          # Fetch existing build cache from Docker Hub, if available
+          # else, built `api` layer will be used as a fallback cache
+          cache-from: type=registry,ref=aaronskiba/roadmap:build-cache-web
+          # Push the updated build cache to Docker Hub
+          cache-to: type=registry,ref=aaronskiba/roadmap:build-cache-web,mode=max
           build-args: |
             SERVER_NAME=uat.library.ualberta.ca
