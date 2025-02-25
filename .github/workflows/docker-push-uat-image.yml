@@ -33,10 +33,9 @@ jobs:
         uses: docker/metadata-action@v3
         with:
           images: aaronskiba/roadmap
-          flavor: |
-            latest=false
           tags: |
             type=match,pattern=.+portage-(\d+\.\d+\.\d+-uat-\d+),group=1
+            type=raw,value=uat
 
       - name: Cache Gem dependencies
         uses: actions/cache@v3
@@ -50,9 +49,19 @@ jobs:
             ${{ runner.os }}-gems-${{ hashFiles('Gemfile') }}
             ${{ runner.os }}-gems-
       
-      - name: Debug extracted metadata
+      - name: Set tags with '-web' and '-api'
+        id: set_tags
+        # Append '-web' and '-api' to each set of extracted tags
+        # Set both web and api tags as environment variables
         run: |
-          echo "Extracted tags: ${{ steps.meta.outputs.tags }}"
+          TAGS="${{ steps.meta.outputs.tags }}"
+          WEB_TAGS=$(echo "$TAGS" | sed 's/$/-web/')
+          API_TAGS=$(echo "$TAGS" | sed 's/$/-api/')
+          echo "Web tags: $WEB_TAGS"
+          echo "API tags: $API_TAGS"
+          echo "web_tags=$WEB_TAGS" >> $GITHUB_ENV
+          echo "api_tags=$API_TAGS" >> $GITHUB_ENV
+            
 
       - name: Build and push the web stage image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
@@ -61,8 +70,7 @@ jobs:
           file: Dockerfile.production
           target: web
           push: true
-          tags: |
-            ${{ steps.meta.outputs.tags }}-web
+          tags: ${{ env.web_tags }}
           # Fetch existing build cache from Docker Hub, if available
           cache-from: type=registry,ref=aaronskiba/roadmap:build-cache
           # Push the updated build cache to Docker Hub
@@ -78,8 +86,7 @@ jobs:
           file: Dockerfile.production
           target: api
           push: true
-          tags: |
-            ${{ steps.meta.outputs.tags }}-api
+          tags: ${{ env.api_tags }}
           # Fetch existing build cache from Docker Hub, if available
           cache-from: type=registry,ref=aaronskiba/roadmap:build-cache
           # Push the updated build cache to Docker Hub
