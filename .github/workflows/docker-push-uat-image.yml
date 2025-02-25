@@ -28,18 +28,6 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       
-      # Extract metadata for web image
-      - name: Extract metadata (tags) for Docker web image
-        id: meta_web
-        uses: docker/metadata-action@v3
-        with:
-          images: aaronskiba/roadmap
-          flavor: |
-            suffix=-web,onlatest=true
-          tags: |
-            type=match,pattern=.+portage-(\d+\.\d+\.\d+-uat-\d+),group=1
-            type=raw,value=uat
-      
       # Extract metadata for api image
       - name: Extract metadata (tags) for Docker api Image
         id: meta_api
@@ -48,6 +36,18 @@ jobs:
           images: aaronskiba/roadmap
           flavor: |
             suffix=-api,onlatest=true
+          tags: |
+            type=match,pattern=.+portage-(\d+\.\d+\.\d+-uat-\d+),group=1
+            type=raw,value=uat
+      
+      # Extract metadata for web image
+      - name: Extract metadata (tags) for Docker web image
+        id: meta_web
+        uses: docker/metadata-action@v3
+        with:
+          images: aaronskiba/roadmap
+          flavor: |
+            suffix=-web,onlatest=true
           tags: |
             type=match,pattern=.+portage-(\d+\.\d+\.\d+-uat-\d+),group=1
             type=raw,value=uat
@@ -66,23 +66,6 @@ jobs:
             ${{ runner.os }}-gems-${{ hashFiles('Gemfile') }}
             ${{ runner.os }}-gems-
 
-      - name: Build and push the web stage image
-        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-        with:
-          context: .
-          file: Dockerfile.production
-          target: web
-          push: true
-          tags: |
-            ${{ steps.meta_web.outputs.tags }}
-          # Fetch existing build cache from Docker Hub, if available
-          cache-from: type=registry,ref=aaronskiba/roadmap:build-cache-web
-          # Push the updated build cache to Docker Hub
-          cache-to: type=registry,ref=aaronskiba/roadmap:build-cache-web,mode=max
-          # SERVER_NAME is used to set `server_name` in nginx.conf
-          build-args: |
-            SERVER_NAME=uat.library.ualberta.ca
-      
       - name: Build and push the api stage image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
@@ -92,7 +75,26 @@ jobs:
           push: true
           tags: |
             ${{ steps.meta_api.outputs.tags }}
-          cache-from: type=registry,ref=aaronskiba/roadmap:build-cache-api
-          cache-to: type=registry,ref=aaronskiba/roadmap:build-cache-api,mode=max
+          # Fetch existing build cache from Docker Hub, if available
+          cache-from: type=registry,ref=aaronskiba/roadmap:build-cache
+          # Push the updated build cache to Docker Hub
+          cache-to: type=registry,ref=aaronskiba/roadmap:build-cache,mode=max
           build-args: |
-            SERVER_NAME=api.uat.library.ualberta.ca
+            SERVER_NAME=uat.library.ualberta.ca
+
+      - name: Build and push the web stage image
+        uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+        with:
+          context: .
+          file: Dockerfile.production
+          target: web
+          push: true
+          tags: |
+            ${{ steps.meta_web.outputs.tags }}
+          # Within `web` stage, fetch the build-cache we pushed in the `api` stage
+          # (`web` stage immediately follows `api` stage in Dockerfile.production)
+          cache-from: type=registry,ref=aaronskiba/roadmap:build-cache
+          # Skip `cache-to:` (Do not overwrite build-cache pushed by the `api` stage)
+          # SERVER_NAME is used to set `server_name` in nginx.conf
+          build-args: |
+            SERVER_NAME=uat.library.ualberta.ca
