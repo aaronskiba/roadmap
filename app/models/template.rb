@@ -215,6 +215,22 @@ class Template < ApplicationRecord
              term: "%#{term}%")
   }
 
+  # (For DMP Assistant's customisation of the `translation` gem)
+  # Plucks Template-associated columns (filtered by default_funder)
+  # for syncing to translation.io, enabling in-app translations.
+  scope :translation_sync_data, lambda {
+    includes(phases: { sections: { questions: %i[annotations question_options] } })
+      # Filter by default_funder_id
+      .where(org_id: Rails.application.secrets.default_funder_id)
+      .pluck(:title, :description,
+             'phases.title', 'phases.description',
+             'sections.title', 'sections.description',
+             'questions.text', 'questions.default_value',
+             'annotations.text',
+             'question_options.text')
+      .flatten.uniq
+  }
+
   # defines the export setting for a template object
   has_settings :export, class_name: 'Settings::Template' do |s|
     s.key :export, defaults: Settings::Template::DEFAULT_SETTINGS
