@@ -28,6 +28,26 @@ module Api
         render '/api/v2/plans/index', status: :ok
       end
 
+      # POST /api/v2/plans
+      def create # rubocop:disable Metrics/AbcSize
+        return render_error(errors: [_('Invalid JSON')], status: :bad_request) if parsed_json.blank?
+
+        service = Api::Plans::CreateFromDmpService.new(
+          json: parsed_json,
+          resource_owner: @resource_owner
+        )
+
+        if service.call
+          # Use the plan returned by the service for the response
+          @items = paginate_response(results: plans_scope.where(id: service.plan.id))
+          render '/api/v2/plans/index', status: :created
+        else
+          render_error(errors: service.errors, status: :bad_request)
+        end
+      rescue JSON::ParserError
+        render_error(errors: [_('Invalid JSON')], status: :bad_request)
+      end
+
       private
 
       # GET /api/v2/plans?complete=true and  /api/v2/plans/:id?complete=true
@@ -38,6 +58,12 @@ module Api
       def plans_scope
         scope = PlansPolicy::Scope.new(@resource_owner).resolve
         @complete ? scope.includes(answers: { question: :section }) : scope
+      end
+
+      def parsed_json
+        @parsed_json ||= JSON.parse(request.body.read)
+      rescue JSON::ParserError
+        nil
       end
     end
   end
