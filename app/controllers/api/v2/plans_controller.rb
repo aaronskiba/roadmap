@@ -8,7 +8,7 @@ module Api
 
       # If the Resource Owner (aka User) is in the Doorkeeper AccessToken then it is an authorization_code
       # token and we need to ensure that the OAuth application is authorized for the relevant Scope
-      before_action -> { doorkeeper_authorize! :write }, only: %i[create]
+      before_action -> { doorkeeper_authorize! :write }, only: %i[create update]
 
       # GET /api/v2/plans/:id
       def show
