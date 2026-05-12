@@ -10,22 +10,20 @@
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
       data-bs-target="#app-navbar-menu" aria-controls="app-navbar-menu" 
       aria-expanded="false" aria-label="Toggle navigation">
-      <span class="sr-only">Toggle navigation</span>
       <span class="navbar-toggler-icon"></span>
     </button>
 
-    <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="app-navbar-menu">
-      <ul class="navbar-nav me-auto">
+      <ul class="navbar-nav me-auto gap-lg-3">
         <% if user_signed_in? %>
           <li class="nav-item <%= ' active' if active_page?(plans_path, true) %>">
-            <%= link_to _('My Dashboard'), plans_path, class: 'nav-link' %>
+            <%= link_to _('My Dashboard'), plans_path, class: 'nav-link py-1 px-3' %>
           </li>
           <li class="nav-item <%= ' active' if active_page?(new_plan_path, true) %>">
-            <%= link_to _('Create plan'), new_plan_path, class: 'nav-link', id: "create-plan-link" %>
+            <%= link_to _('Create plan'), new_plan_path, class: 'nav-link py-1 px-3', id: "create-plan-link" %>
           </li>
           <li class="dropdown nav-item <%= ' active' if active_page?(public_plans_path, true) || active_page?(public_templates_path, true) %>" id="reference-dropdown">
-            <a href="#" class="dropdown-toggle nav-link" role="button" id="reference-menu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <a href="#" class="dropdown-toggle nav-link py-1 px-3" role="button" id="reference-menu" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i class="fas fa-book" aria-hidden="true">&nbsp;</i>
               <%= _("Reference") %>
             </a>
@@ -40,21 +38,20 @@
           </li>
         <% else %>
           <li class="nav-item <%= ' active' if active_page?(root_path, true) || active_page?(plans_path, true) %>">
-            <%= link_to _('Home'), root_path, class: 'nav-link' %>
+            <%= link_to _('Home'), root_path, class: 'nav-link py-1 px-3' %>
           </li>
           <li class="nav-item <%= ' active' if active_page?(public_plans_path, true) %>">
-            <%= link_to _('Example DMPs'), public_plans_path, class: 'nav-link' %>
+            <%= link_to _('Example DMPs'), public_plans_path, class: 'nav-link py-1 px-3' %>
           </li>
           <li class="nav-item <%= ' active' if active_page?(public_templates_path, true) %>">
-            <%= link_to _('DMP Templates'), public_templates_path, class: 'nav-link' %>
+            <%= link_to _('DMP Templates'), public_templates_path, class: 'nav-link py-1 px-3' %>
           </li>
         <% end %>
-        <!-- help page -->
         <li class="nav-item <%= ' active' if active_page?(help_path, true) %>">
-          <%= link_to _('Help'), help_path, class: 'nav-link' %>
+          <%= link_to _('Help'), help_path, class: 'nav-link py-1 px-3' %>
         </li>
         <li class="nav-item <%= ' active' if active_page?(about_us_path, true) %>">
-          <%= link_to _('About'), about_us_path, class: 'nav-link' %>
+          <%= link_to _('About'), about_us_path, class: 'nav-link py-1 px-3' %>
         </li>
       </ul>
 
