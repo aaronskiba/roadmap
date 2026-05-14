@@ -8,6 +8,8 @@
 }
 
 .org-logo {
-  height: 65px;
+  max-height: 50px;
+  height: auto;
+  width: auto;
   padding-right: calc($grid-gutter-width / 2);
 }
